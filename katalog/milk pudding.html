@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Katalog Buket Floris</title>
+</head>
+<body class="bg-pink-50 font-sans">
+
+  <section class="max-w-6xl mx-auto px-4 py-10">
+
+    <!-- Judul -->
+    <h1 class="text-2xl font-bold text-center text-pink-800 mb-6">
+      Katalog milk pudding
+    </h1>
+
+    <!-- Search & Filter Produk -->
+    <div class="mb-8 flex flex-col md:flex-row gap-4">
+
+      <!-- Search Nama Produk -->
+      <div class="flex-1">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Cari milk pudding favoritmu..."
+          class="w-full rounded-2xl border border-pink-200 bg-white px-5 py-3 text-gray-700 shadow-sm focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200"
+        />
+      </div>
+
+<!-- Filter Harga -->
+<div class="relative w-full md:w-56">
+
+  <!-- Tombol Dropdown -->
+  <button id="priceButton" type="button"
+    class="w-full rounded-2xl border border-pink-300 bg-white px-5 py-3 text-pink-800 font-medium shadow-sm flex justify-between items-center hover:bg-pink-200 transition">
+
+    <span id="selectedPrice">Semua Harga</span>
+
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <!-- Menu Dropdown -->
+  <div id="priceDropdown"
+    class="hidden absolute z-50 mt-2 w-full bg-pink-50 border border-pink-200 rounded-2xl shadow-lg overflow-hidden">
+
+    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="all">
+      Semua Harga
+    </button>
+
+    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="0-50000">
+      Di bawah Rp50.000
+    </button>
+
+    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="50000-100000">
+      Rp50.000 - Rp100.000
+    </button>
+
+    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="100000-200000">
+      Rp100.000 - Rp200.000
+    </button>
+
+    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="200000-99999999">
+      Di atas Rp200.000
+    </button>
+
+  </div>
+</div>
+
+    </div>
+
+    <!-- Grid Produk 2 Kolom -->
+    <div id="productGrid" class="grid grid-cols-2 gap-4">
+
+      <!-- Produk 1 -->
+      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
+           data-name="Bouquet elina pink"
+           data-price="87000">
+
+        <img src="../asset/buket/buket1.png"
+             alt="Bouquet elina pink"
+             class="w-full aspect-[4/5] object-cover">
+
+        <div class="p-3">
+          <h2 class="text-sm font-semibold text-gray-800">
+            Bouquet elina pink
+          </h2>
+          <p class="text-pink-700 font-bold text-sm mt-1">Rp87.000</p>
+
+          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20elina%20Pink%20[87.000]"
+             target="_blank"
+             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
+            Order Sekarang
+          </a>
+        </div>
+      </div>
+
+      <!-- Produk 2 -->
+      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
+           data-name="Bouquet basic pink"
+           data-price="55000">
+
+        <img src="../asset/buket/buket2.png"
+             alt="Bouquet basic pink"
+             class="w-full aspect-[4/5] object-cover">
+
+        <div class="p-3">
+          <h2 class="text-sm font-semibold text-gray-800">
+            Bouquet basic pink
+          </h2>
+          <p class="text-pink-700 font-bold text-sm mt-1">Rp55.000</p>
+
+          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20basic%20pink%20[55.000]"
+             target="_blank"
+             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
+            Order Sekarang
+          </a>
+        </div>
+      </div>
+
+      <!-- Produk 3 -->
+      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
+           data-name="Bouquet azzura pink"
+           data-price="187000">
+
+        <img src="../asset/buket/buket3.png"
+             alt="buket 3"
+             class="w-full aspect-[4/5] object-cover">
+
+        <div class="p-3">
+          <h2 class="text-sm font-semibold text-gray-800">
+            Bouquet azzura pink
+          </h2>
+          <p class="text-pink-700 font-bold text-sm mt-1">Rp187.000</p>
+
+          <a href="https://wa.me/6281234567890?text=Halo%20kak,%20saya%20ingin%20memesan%20Bouquet%20Azzura%20pink%20[187.000]"
+             target="_blank"
+             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
+            Order Sekarang
+          </a>
+        </div>
+      </div>
+
+      <!-- Produk 4 -->
+      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
+           data-name="Bouquet lady pink"
+           data-price="187000">
+
+        <img src="../asset/buket/buket4.png"
+             alt="Bouquet lady pink"
+             class="w-full aspect-[4/5] object-cover">
+
+        <div class="p-3">
+          <h2 class="text-sm font-semibold text-gray-800">
+            Bouquet lady pink
+          </h2>
+          <p class="text-pink-700 font-bold text-sm mt-1">Rp187.000</p>
+
+          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20lady%20pink%20[187.000]"
+             target="_blank"
+             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
+            Order Sekarang
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("searchInput");
+    const products = document.querySelectorAll(".product");
+
+    // Custom dropdown
+    const priceButton = document.getElementById("priceButton");
+    const priceDropdown = document.getElementById("priceDropdown");
+    const selectedPrice = document.getElementById("selectedPrice");
+    const priceOptions = document.querySelectorAll(".price-option");
+
+    let selectedPriceValue = "all";
+
+    // Buka/tutup dropdown
+    priceButton.addEventListener("click", () => {
+      priceDropdown.classList.toggle("hidden");
+    });
+
+    // Pilih harga
+    priceOptions.forEach(option => {
+      option.addEventListener("click", () => {
+        selectedPriceValue = option.dataset.value;
+        selectedPrice.textContent = option.textContent.trim();
+        priceDropdown.classList.add("hidden");
+        filterProducts();
+      });
+    });
+
+    // Tutup dropdown jika klik di luar
+    document.addEventListener("click", (e) => {
+      if (!priceButton.contains(e.target) && !priceDropdown.contains(e.target)) {
+        priceDropdown.classList.add("hidden");
+      }
+    });
+
+    // Filter produk
+    function filterProducts() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+
+      products.forEach(product => {
+        const productName = product.getAttribute("data-name").toLowerCase();
+        const productPrice = parseInt(product.getAttribute("data-price"));
+
+        // Filter nama
+        const matchName = productName.includes(searchValue);
+
+        // Filter harga
+        let matchPrice = true;
+
+        if (selectedPriceValue !== "all") {
+          const [min, max] = selectedPriceValue.split("-").map(Number);
+          matchPrice = productPrice >= min && productPrice <= max;
+        }
+
+        // Tampilkan atau sembunyikan produk
+        if (matchName && matchPrice) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+    }
+
+    // Search produk
+    searchInput.addEventListener("input", filterProducts);
+
+  });
+</script>
+
+</body>
+</html>
