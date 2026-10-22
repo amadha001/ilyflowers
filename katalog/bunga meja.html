@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#fdf2f8">
-  <title>Katalog Bouquet Floris</title>
+  <title>Katalog Bunga Meja Floris</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -26,7 +26,7 @@
 <body class="bg-pink-50 font-sans">
   <section class="max-w-6xl mx-auto px-4 py-10">
     <h1 class="text-2xl font-bold text-center text-pink-800 mb-6">
-      Katalog Bouquet
+      Katalog Bunga Meja
     </h1>
 
     <div class="mb-8 flex flex-col md:flex-row gap-4">
@@ -34,8 +34,8 @@
         <input
           type="search"
           id="searchInput"
-          placeholder="Cari buket favoritmu..."
-          aria-label="Cari nama buket"
+          placeholder="Cari bunga meja favoritmu..."
+          aria-label="Cari nama bunga meja"
           class="w-full rounded-2xl border border-pink-200 bg-white px-5 py-3 text-gray-700 shadow-sm focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200">
       </div>
 
@@ -68,19 +68,17 @@
     <p id="resultCount" class="text-sm text-pink-800 mb-4" aria-live="polite"></p>
 
     <div id="statusMessage" class="text-center text-gray-600 py-8">
-      Memuat katalog...
+      Memuat katalog bunga meja...
     </div>
 
     <div id="productGrid" class="grid grid-cols-2 gap-4"></div>
 
-    <p id="emptyMessage"
-      class="hidden text-center text-gray-600 py-8">
-      Produk tidak ditemukan. Coba kata kunci atau rentang harga lain.
+    <p id="emptyMessage" class="hidden text-center text-gray-600 py-8">
+      Bunga meja tidak ditemukan. Coba kata kunci atau rentang harga lain.
     </p>
   </section>
 
   <script>
-    // GANTI dengan URL Web App Apps Script milikmu.
     const API_URL = "https://script.google.com/macros/s/AKfycbx6OD3ghSmP5YFBGlq851DlRZRGmLVokaZskObvMqwBcQZ_OhhbviNO1CxyZjp39xxetg/exec";
 
     const grid = document.getElementById("productGrid");
@@ -97,18 +95,15 @@
     let selectedPriceValue = "all";
 
     function money(value) {
-  const angka = Number(String(value).replace(/[^\d-]/g, ""));
-  return "Rp" + angka.toLocaleString("id-ID");
-}
+      const angka = Number(String(value).replace(/[^\d-]/g, ""));
+      return "Rp" + angka.toLocaleString("id-ID");
+    }
 
-    // Mengubah link berbagi Google Drive menjadi URL gambar.
     function getImageUrl(link) {
       link = String(link || "").trim();
 
       if (!link) return "";
 
-      // Mendukung link Drive berbentuk /file/d/ID/view
-      // maupun link yang berisi parameter id=ID.
       const driveMatch =
         link.match(/drive\.google\.com\/file\/d\/([^/?]+)/) ||
         link.match(/[?&]id=([^&]+)/);
@@ -118,7 +113,6 @@
           encodeURIComponent(driveMatch[1]) + "&sz=w900";
       }
 
-      // Link gambar langsung dari layanan lain.
       return link;
     }
 
@@ -141,7 +135,7 @@
 
         const img = document.createElement("img");
         img.className = "product-image";
-        img.alt = product.judul || product.nama || "Foto buket";
+        img.alt = product.judul || product.nama || "Foto bunga meja";
         img.width = 400;
         img.height = 500;
         img.decoding = "async";
@@ -153,8 +147,7 @@
           img.loading = "lazy";
         }
 
-        const imageUrl = getImageUrl(product.link_foto);
-        img.src = imageUrl;
+        img.src = getImageUrl(product.link_foto);
 
         img.onerror = function () {
           this.onerror = null;
@@ -167,7 +160,7 @@
 
         const title = document.createElement("h2");
         title.className = "text-sm font-semibold text-gray-800";
-        title.textContent = product.judul || product.nama || "Bouquet";
+        title.textContent = product.judul || product.nama || "Bunga Meja";
 
         const price = document.createElement("p");
         price.className = "text-pink-700 font-bold text-sm mt-1";
@@ -177,7 +170,7 @@
         const phone = String(product.nomor_wa || "").replace(/\D/g, "");
 
         const message = "Halo kak, saya ingin memesan " +
-          String(product.pesan || product.judul || product.nama || "bouquet") +
+          String(product.pesan || product.judul || product.nama || "bunga meja") +
           " dengan harga " + money(product.harga);
 
         order.href = phone
@@ -237,19 +230,18 @@
     function loadProducts() {
       if (!API_URL.startsWith("https://script.google.com/")) {
         statusMessage.textContent =
-          "Masukkan URL Web App Apps Script ke variabel API_URL terlebih dahulu.";
+          "Masukkan URL Web App Apps Script terlebih dahulu.";
         return;
       }
 
-      // JSONP menghindari masalah CORS saat website ada di GitHub Pages.
-      const callbackName = "__bouquetDataCallback";
+      const callbackName = "__bungaMejaDataCallback";
 
       window[callbackName] = function (data) {
         delete window[callbackName];
 
         if (!Array.isArray(data)) {
           statusMessage.textContent =
-            "Data katalog tidak sesuai. Periksa Apps Script dan tab Produk.";
+            "Data katalog tidak sesuai. Periksa Apps Script dan tab BungaMeja.";
           return;
         }
 
@@ -258,18 +250,19 @@
 
         if (products.length === 0) {
           statusMessage.textContent =
-            "Belum ada produk aktif. Periksa isi Google Sheets.";
+            "Belum ada bunga meja aktif. Periksa isi Google Sheets.";
           statusMessage.classList.remove("hidden");
         }
       };
 
       const script = document.createElement("script");
-script.src = API_URL + "?kategori=bunga_meja&callback=" + callbackName;
-script.onerror = function () {
-  delete window[callbackName];
-  statusMessage.textContent =
-    "Katalog gagal dimuat. Periksa URL Web App dan pengaturan aksesnya.";
-};
+      script.src = API_URL + "?kategori=bunga_meja&callback=" + callbackName;
+
+      script.onerror = function () {
+        delete window[callbackName];
+        statusMessage.textContent =
+          "Katalog gagal dimuat. Periksa URL Web App dan pengaturan aksesnya.";
+      };
 
       document.body.appendChild(script);
     }
