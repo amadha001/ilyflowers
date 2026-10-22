@@ -1,2043 +1,306 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fdf2f8">
+  <title>Katalog Bouquet Floris</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>Katalog Buket Floris</title>
+
+  <style>
+    .product-image {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      background: #fce7f3;
+    }
+
+    .product[hidden] {
+      display: none !important;
+    }
+  </style>
 </head>
+
 <body class="bg-pink-50 font-sans">
-
   <section class="max-w-6xl mx-auto px-4 py-10">
-
-    <!-- Judul -->
     <h1 class="text-2xl font-bold text-center text-pink-800 mb-6">
       Katalog Bouquet
     </h1>
 
-    <!-- Search & Filter Produk -->
     <div class="mb-8 flex flex-col md:flex-row gap-4">
-
-      <!-- Search Nama Produk -->
       <div class="flex-1">
         <input
-          type="text"
+          type="search"
           id="searchInput"
           placeholder="Cari buket favoritmu..."
-          class="w-full rounded-2xl border border-pink-200 bg-white px-5 py-3 text-gray-700 shadow-sm focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200"
-        />
+          aria-label="Cari nama buket"
+          class="w-full rounded-2xl border border-pink-200 bg-white px-5 py-3 text-gray-700 shadow-sm focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200">
       </div>
 
-<!-- Filter Harga -->
-<div class="relative w-full md:w-56">
+      <div class="relative w-full md:w-56">
+        <button
+          id="priceButton"
+          type="button"
+          aria-expanded="false"
+          aria-controls="priceDropdown"
+          class="w-full rounded-2xl border border-pink-300 bg-white px-5 py-3 text-pink-800 font-medium shadow-sm flex justify-between items-center hover:bg-pink-200 transition">
+          <span id="selectedPrice">Semua Harga</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
 
-  <!-- Tombol Dropdown -->
-  <button id="priceButton" type="button"
-    class="w-full rounded-2xl border border-pink-300 bg-white px-5 py-3 text-pink-800 font-medium shadow-sm flex justify-between items-center hover:bg-pink-200 transition">
-
-    <span id="selectedPrice">Semua Harga</span>
-
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
-  </button>
-
-  <!-- Menu Dropdown -->
-  <div id="priceDropdown"
-    class="hidden absolute z-50 mt-2 w-full bg-pink-50 border border-pink-200 rounded-2xl shadow-lg overflow-hidden">
-
-    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="all">
-      Semua Harga
-    </button>
-
-    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="0-50000">
-      Di bawah Rp50.000
-    </button>
-
-    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="50000-100000">
-      Rp50.000 - Rp100.000
-    </button>
-
-    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="100000-200000">
-      Rp100.000 - Rp200.000
-    </button>
-
-    <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100 transition" data-value="200000-99999999">
-      Di atas Rp200.000
-    </button>
-
-  </div>
-</div>
-
+        <div id="priceDropdown"
+          class="hidden absolute z-50 mt-2 w-full bg-pink-50 border border-pink-200 rounded-2xl shadow-lg overflow-hidden">
+          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="all">Semua Harga</button>
+          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="0-49999">Di bawah Rp50.000</button>
+          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="50000-100000">Rp50.000 - Rp100.000</button>
+          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="100001-200000">Rp100.000 - Rp200.000</button>
+          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="200001-99999999">Di atas Rp200.000</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Grid Produk 2 Kolom -->
-    <div id="productGrid" class="grid grid-cols-2 gap-4">
+    <p id="resultCount" class="text-sm text-pink-800 mb-4" aria-live="polite"></p>
 
-      <!-- Produk 1 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet elina pink"
-           data-price="87000">
-
-        <img src="../asset/buket/buket1.png"
-             alt="Bouquet elina pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet elina pink [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp87.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20elina%20Pink%20[M][87.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-
-      <!-- Produk 2 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet basic pink"
-           data-price="55000">
-
-        <img src="../asset/buket/buket2.png"
-             alt="Bouquet basic pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet basic pink [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp55.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20basic%20pink%20[M][55.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-
-      <!-- Produk 3 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet azzura pink"
-           data-price="178000">
-
-        <img src="../asset/buket/buket3.png"
-             alt="buket 3"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet azzura pink [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp178.000</p>
-
-          <a href="https://wa.me/6281234567890?text=Halo%20kak,%20saya%20ingin%20memesan%20Bouquet%20Azzura%20pink%20[L][178.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-
-      <!-- Produk 4 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet lady pink"
-           data-price="165000">
-
-        <img src="../asset/buket/buket4.png"
-             alt="Bouquet lady pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet lady pink [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp165.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20lady%20pink%20[M][165.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 5 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet catania pink"
-           data-price="178000">
-
-        <img src="../asset/buket/buket5.png"
-             alt="Bouquet catania pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet catania pink [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp178.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Catania%20pink%20[L][178.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 6 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet merliah pink"
-           data-price="87000">
-
-        <img src="../asset/buket/buket6.png"
-             alt="Bouquet merliah pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet Merliah pink [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp87.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Merliah%20pink%20[M][87.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 7 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet lumina pink"
-           data-price="165000">
-
-        <img src="../asset/buket/buket7.png"
-             alt="Bouquet lumina pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet lumina pink [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp165.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20lumina%20pink%20[L][165.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 8 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina pink"
-           data-price="125000">
-
-        <img src="../asset/buket/buket8.png"
-             alt="Bouquet  thumbelina pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina pink [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp125.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20pink%20[M][125.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 9 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet nori pink"
-           data-price="235000">
-
-        <img src="../asset/buket/buket9.png"
-             alt="Bouquet nori pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet nori pink [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp235.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20nori%20pink%20[L][235.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 10 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="378000">
-
-        <img src="../asset/buket/buket10.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet tumbelina [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp378.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[XL][378.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 11 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="250000">
-
-        <img src="../asset/buket/buket11.jpg"
-             alt="Bouquet thumbelina [L]"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp250.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[L][250.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 12 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="575000">
-
-        <img src="../asset/buket/buket12.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [XXL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp575.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[XXL][575.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 13 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina pink"
-           data-price="375000">
-
-        <img src="../asset/buket/buket13.jpg"
-             alt="Bouquet thumbelina pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina pink [XXL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp 375.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20nori%20pink%20[L][235.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 14 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket14.jpg"
-             alt=" bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 15 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="150000">
-
-        <img src="../asset/buket/buket15.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp150.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[L][150.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 16 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="378000">
-
-        <img src="../asset/buket/buket16.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp378.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[XL][378.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 17 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket17.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 18 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="575000">
-
-        <img src="../asset/buket/buket18.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [XXL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp575.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[XXL][575.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!--BUKET SATIN-->
-     
-      <!-- Produk 19 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet satin red black basic"
-           data-price="165000">
-
-        <img src="../asset/buket/buket19.jpg"
-             alt="Bouquet satin red black basic"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet satin red black basic [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp175.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Satin%20red%20black%20basic[L][175.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 20 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet satin purple money"
-           data-price="325000">
-
-        <img src="../asset/buket/buket20.jpg"
-             alt="Bouquet satin purple money"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet satin purple money [tidak include uang] [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp325.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20satin%20purple%20money%20[XL][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 21 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet "
-           data-price="175000">
-
-        <img src="../asset/buket/buket21.jpg"
-             alt="Bouquet satin pink glitter"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet satin pink glitter [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp175.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20satin%20pink%20gliter%20[L][175.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 22 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet satin red glitter"
-           data-price="135000">
-
-        <img src="../asset/buket/buket22.jpg"
-             alt="Bouquet satin red glitter"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet satin red glitter [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp135.000</p>
-          
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20satin%20red%20glitter%20[L][135.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 23 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet satin navy kriwil"
-           data-price="187000">
-
-        <img src="../asset/buket/buket23.jpg"
-             alt="Bouquet satin navy kriwil"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet satin navy kriwil [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp187.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Satin%20navi%20kriwil%20[L][187.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!--BUKET BONEKA GRADUATION-->
-       <!-- Produk 24 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet teddy snack"
-           data-price="150000">
-
-        <img src="../asset/buket/buket25.jpg"
-             alt="Bouquet teddy snack"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-           Bouquet teddy snack [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp155.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20teddya%20snack%20[M][155.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 25 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet teddy snack"
-           data-price="150000">
-
-        <img src="../asset/buket/buket26.jpg"
-             alt="Bouquet teddy snack"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-           Bouquet teddy snack [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp155.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20teddya%20snack%20[M][155.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 26 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet pipe sunflowers graduation"
-           data-price="230000">
-
-        <img src="../asset/buket/buket26.jpg"
-             alt="Bouquet pipe sunflowers graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet pipe sunflowers graduation [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp230.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20pipe%20sunflowers%20graduation%20[L][230.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 27 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet choco bear graduation"
-           data-price="145000">
-
-        <img src="../asset/buket/buket27.jpg"
-             alt="Bouquet choco bear graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet choco bear graduation [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp145.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20choco%20bear%20graduation%20[M][145.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 28 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet graduation tartan pink"
-           data-price="100000">
-
-        <img src="../asset/buket/buket28.jpg"
-             alt="Bouquet graduation tartan pink"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet graduation tartan pink [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20graduation%20tartan%20pink%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 29 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet pompom graduation blue"
-           data-price="187000">
-
-        <img src="../asset/buket/buket29.jpg"
-             alt=""Bouquet pompom graduation blue"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            "Bouquet pompom graduation blue [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp187.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20"Bouquet%20pompom%20graduation%20blue%20[L][187.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-
-        <!-- Produk 29 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet special graduation"
-           data-price="275000">
-
-        <img src="../asset/buket/buket30.jpg"
-             alt="Bouquet special graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet special graduation [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp275.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20special%20graduation%20[XL][275.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 31 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet bear black graduation"
-           data-price="100000">
-
-        <img src="../asset/buket/buket31.jpg"
-             alt="Bouquet bear black graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet bear black graduation [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20bear%20black%20graduation%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 32 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet black sweet graduation"
-           data-price="300000">
-
-        <img src="../asset/buket/buket32.jpg"
-             alt="Bouquet black sweet graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet black sweet graduation [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp300.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20black%20sweet%20graduation%20[XL][300.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 33 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet sweet peony graduation"
-           data-price="500000">
-
-        <img src="../asset/buket/buket33.jpg"
-             alt="Bouquet sweet peony graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet sweet peony graduation [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp500.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20sweet%20peony%20graduation%20[XL][500.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 34 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet sweet blue graduation"
-           data-price="287000">
-
-        <img src="../asset/buket/buket34.jpg"
-             alt="Bouquet sweet blue graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet sweet blue graduation [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp287.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20sweet%20blue%20graduation%20[XL][287.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 35 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet cute daisy graduation"
-           data-price="165000">
-
-        <img src="../asset/buket/buket35.jpg"
-             alt="Bouquet cute daisy graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-           Bouquet cute daisy graduation[L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp165.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Bouquet%20cute%20daisy%20graduatio%20[L][165.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 36 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet pipe bora graduation"
-           data-price="100000">
-
-        <img src="../asset/buket/buket36.jpg"
-             alt="Bouquet pipe bora graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet pipe bora graduation [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20pipe%20bora%20graduation%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 37 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet pinky bear"
-           data-price="100000">
-
-        <img src="../asset/buket/buket37.jpg"
-             alt="Bouquet pinky bear"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet pinky bear [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20pinky%20bear%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 38 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet milky rose"
-           data-price="120000">
-
-        <img src="../asset/buket/buket38.jpg"
-             alt="Bouquet milky rose"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet milky rose [M}
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp120.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20milky%20rose%20[S][120.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 39 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet matchaci"
-           data-price="140000">
-
-        <img src="../asset/buket/buket39.jpg"
-             alt="Bouquet matchaci"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet matchaci [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp140.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20matchaci%20[S][140.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 40 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet bluemoon graduation"
-           data-price="335000">
-
-        <img src="../asset/buket/buket40.jpg"
-             alt="Bouquet bluemoon graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet bluemoon graduation [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp335.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20bluemoon%20graduation%20[XL][335.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 41 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet beng beng bear graduation"
-           data-price="135000">
-
-        <img src="../asset/buket/buket41.jpg"
-             alt="Bouquet beng beng bear graduation"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet beng beng bear graduation [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp135.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20beng%20beng%20bear%20graduation%20[M][135.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 42  Bouquet cute bear red -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet cute bear red"
-           data-price="100000">
-
-        <img src="../asset/buket/buket42.jpg"
-             alt="Bouquet cute bear red"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet cute bear red [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20cute%20bear%20red%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      <!--end bouquet boneka-->
-      
-      <!--BUKET BUNGA RANDOM-->
-         
-        <!-- Produk 43 sunny bear -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet sunny bear"
-           data-price="135000">
-
-        <img src="../asset/buket/buket43.jpg"
-             alt="Bouquet sunny bear"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet sunny bear [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp135.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20sunny%20bear%20[M][135.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-        <!-- Produk 44 black rose-->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet black rose"
-           data-price="100000">
-
-        <img src="../asset/buket/buket44.jpg"
-             alt="Bouquet black rose"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet black rose [L]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp178.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20black%20rose%20[l][178.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 45 cuties -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet cuties"
-           data-price="55000">
-
-        <img src="../asset/buket/buket45.jpg"
-             alt="Bouquet cuties"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet cuties [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp55.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20cuties%20[M][55.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 46 messy pink two lily -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet messy pink two lily"
-           data-price="335000">
-
-        <img src="../asset/buket/buket46.jpg"
-             alt="Bouquet messy pink two lily"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet messy pink two lily [XXL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp335.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20messy%20pink%20tw%20lily%20[XXL][335.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 47 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet brown sugar"
-           data-price="100000">
-
-        <img src="../asset/buket/buket47.jpg"
-             alt="Bouquet brown sugar"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet brown sugar [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20brown%20sugar%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 48 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet vintage red"
-           data-price="315000">
-
-        <img src="../asset/buket/buket48.jpg"
-             alt="Bouquet vintage red"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet vintage red [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp315.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20vintage%20red%20[S][315.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 49 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet blueblack"
-           data-price="100000">
-
-        <img src="../asset/buket/buket49.jpg"
-             alt="Bouquet blueblack"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet blueblack [M]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20blueblack%20[M][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 50 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet Round bluemoon"
-           data-price="3500000">
-
-        <img src="../asset/buket/buket50.jpg"
-             alt="Bouquet Round bluemoon"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet Round bluemoon [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp350.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Roundbluemoon%20[XL][350.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 51 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet Moon Light Blue"
-           data-price="375000">
-
-        <img src="../asset/buket/buket51.jpg"
-             alt="Bouquet Moon Light Blue"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet Moon Light Blue [XL]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp375.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20Moon%20Light%20Blue%20[XL][375.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 52 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket52.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 53 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket53.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 54 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket54.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 55 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket55.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 56 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket56.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 57 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket57.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 58 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket58.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 59 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket59.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 60 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket60.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 61 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket61.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 62 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket62.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 63 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket63.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 64 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket64.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 65 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket65.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 66 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket66.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 67 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket67.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 68 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket68.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 69 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket69.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 70 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket70.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 71 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket71.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 72 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket72.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 73 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket73.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 74 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket74.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 75 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket75.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 76 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket76.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 77 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket77.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 78 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket78.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 79 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket79.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 80 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket80.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 81 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket81.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
-      <!-- Produk 82 -->
-      <div class="product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition"
-           data-name="Bouquet thumbelina"
-           data-price="100000">
-
-        <img src="../asset/buket/buket82.jpg"
-             alt="Bouquet thumbelina"
-             class="w-full aspect-[4/5] object-cover">
-
-        <div class="p-3">
-          <h2 class="text-sm font-semibold text-gray-800">
-            Bouquet thumbelina [S]
-          </h2>
-          <p class="text-pink-700 font-bold text-sm mt-1">Rp100.000</p>
-
-          <a href="https://wa.me/6285700500378?text=Halo%20kak,%20saya%20ingin%20memesan%20Buket%20thumbelina%20[S][100.000]"
-             target="_blank"
-             class="mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition">
-            Order Sekarang
-          </a>
-        </div>
-      </div>
-      
+    <div id="statusMessage" class="text-center text-gray-600 py-8">
+      Memuat katalog...
     </div>
+
+    <div id="productGrid" class="grid grid-cols-2 gap-4"></div>
+
+    <p id="emptyMessage"
+      class="hidden text-center text-gray-600 py-8">
+      Produk tidak ditemukan. Coba kata kunci atau rentang harga lain.
+    </p>
   </section>
 
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
+    // GANTI dengan URL Web App Apps Script milikmu.
+    const API_URL = "https://script.google.com/macros/s/AKfycbx6OD3ghSmP5YFBGlq851DlRZRGmLVokaZskObvMqwBcQZ_OhhbviNO1CxyZjp39xxetg/exec";
 
+    const grid = document.getElementById("productGrid");
     const searchInput = document.getElementById("searchInput");
-    const products = document.querySelectorAll(".product");
-
-    // Custom dropdown
     const priceButton = document.getElementById("priceButton");
     const priceDropdown = document.getElementById("priceDropdown");
     const selectedPrice = document.getElementById("selectedPrice");
     const priceOptions = document.querySelectorAll(".price-option");
+    const resultCount = document.getElementById("resultCount");
+    const emptyMessage = document.getElementById("emptyMessage");
+    const statusMessage = document.getElementById("statusMessage");
 
+    let products = [];
     let selectedPriceValue = "all";
 
-    // Buka/tutup dropdown
+    function money(value) {
+      return "Rp" + Number(value).toLocaleString("id-ID");
+    }
+
+    // Mengubah link berbagi Google Drive menjadi URL gambar.
+    function getImageUrl(link) {
+      link = String(link || "").trim();
+
+      if (!link) return "";
+
+      // Mendukung link Drive berbentuk /file/d/ID/view
+      // maupun link yang berisi parameter id=ID.
+      const driveMatch =
+        link.match(/drive\.google\.com\/file\/d\/([^/?]+)/) ||
+        link.match(/[?&]id=([^&]+)/);
+
+      if (driveMatch) {
+        return "https://drive.google.com/thumbnail?id=" +
+          encodeURIComponent(driveMatch[1]) + "&sz=w900";
+      }
+
+      // Link gambar langsung dari layanan lain.
+      return link;
+    }
+
+    function renderProducts(data) {
+      grid.replaceChildren();
+      const fragment = document.createDocumentFragment();
+
+      data.forEach((product, index) => {
+        const card = document.createElement("article");
+        card.className =
+          "product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition";
+
+        card.dataset.name = String(
+          product.nama || ""
+        ).toLowerCase();
+
+        card.dataset.price = String(
+          Number(product.harga) || 0
+        );
+
+        const img = document.createElement("img");
+        img.className = "product-image";
+        img.alt = product.judul || product.nama || "Foto buket";
+        img.width = 400;
+        img.height = 500;
+        img.decoding = "async";
+
+        if (index === 0) {
+          img.loading = "eager";
+          img.fetchPriority = "high";
+        } else {
+          img.loading = "lazy";
+        }
+
+        const imageUrl = getImageUrl(product.link_foto);
+        img.src = imageUrl;
+
+        img.onerror = function () {
+          this.onerror = null;
+          this.removeAttribute("src");
+          this.alt = "Foto tidak dapat dimuat. Periksa link Google Drive.";
+        };
+
+        const details = document.createElement("div");
+        details.className = "p-3";
+
+        const title = document.createElement("h2");
+        title.className = "text-sm font-semibold text-gray-800";
+        title.textContent = product.judul || product.nama || "Bouquet";
+
+        const price = document.createElement("p");
+        price.className = "text-pink-700 font-bold text-sm mt-1";
+        price.textContent = money(product.harga);
+
+        const order = document.createElement("a");
+        const phone = String(product.nomor_wa || "").replace(/\D/g, "");
+
+        const message = "Halo kak, saya ingin memesan " +
+          String(product.pesan || product.judul || product.nama || "bouquet") +
+          " dengan harga " + money(product.harga);
+
+        order.href = phone
+          ? "https://wa.me/" + phone + "?text=" + encodeURIComponent(message)
+          : "#";
+
+        order.target = "_blank";
+        order.rel = "noopener noreferrer";
+        order.className =
+          "mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition";
+        order.textContent = "Order Sekarang";
+
+        if (!phone) {
+          order.addEventListener("click", event => {
+            event.preventDefault();
+            alert("Nomor WhatsApp produk ini belum diisi di Google Sheets.");
+          });
+        }
+
+        details.append(title, price, order);
+        card.append(img, details);
+        fragment.appendChild(card);
+      });
+
+      grid.appendChild(fragment);
+      filterProducts();
+      statusMessage.classList.add("hidden");
+    }
+
+    function filterProducts() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+      const cards = Array.from(grid.querySelectorAll(".product"));
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const name = card.dataset.name || "";
+        const price = Number(card.dataset.price) || 0;
+        const matchName = name.includes(searchValue);
+
+        let matchPrice = true;
+
+        if (selectedPriceValue !== "all") {
+          const [min, max] = selectedPriceValue.split("-").map(Number);
+          matchPrice = price >= min && price <= max;
+        }
+
+        const show = matchName && matchPrice;
+        card.hidden = !show;
+
+        if (show) visibleCount++;
+      });
+
+      resultCount.textContent = visibleCount + " produk ditemukan";
+      emptyMessage.classList.toggle("hidden", visibleCount !== 0);
+    }
+
+    function loadProducts() {
+      if (!API_URL.startsWith("https://script.google.com/")) {
+        statusMessage.textContent =
+          "Masukkan URL Web App Apps Script ke variabel API_URL terlebih dahulu.";
+        return;
+      }
+
+      // JSONP menghindari masalah CORS saat website ada di GitHub Pages.
+      const callbackName = "__bouquetDataCallback";
+
+      window[callbackName] = function (data) {
+        delete window[callbackName];
+
+        if (!Array.isArray(data)) {
+          statusMessage.textContent =
+            "Data katalog tidak sesuai. Periksa Apps Script dan tab Produk.";
+          return;
+        }
+
+        products = data;
+        renderProducts(products);
+
+        if (products.length === 0) {
+          statusMessage.textContent =
+            "Belum ada produk aktif. Periksa isi Google Sheets.";
+          statusMessage.classList.remove("hidden");
+        }
+      };
+
+      const script = document.createElement("script");
+      script.src = API_URL + "?callback=" + callbackName;
+      script.onerror = function () {
+        delete window[callbackName];
+        statusMessage.textContent =
+          "Katalog gagal dimuat. Periksa URL Web App dan pengaturan aksesnya.";
+      };
+
+      document.body.appendChild(script);
+    }
+
     priceButton.addEventListener("click", () => {
-      priceDropdown.classList.toggle("hidden");
+      const isHidden = priceDropdown.classList.toggle("hidden");
+      priceButton.setAttribute("aria-expanded", String(!isHidden));
     });
 
-    // Pilih harga
     priceOptions.forEach(option => {
       option.addEventListener("click", () => {
         selectedPriceValue = option.dataset.value;
         selectedPrice.textContent = option.textContent.trim();
         priceDropdown.classList.add("hidden");
+        priceButton.setAttribute("aria-expanded", "false");
         filterProducts();
       });
     });
 
-    // Tutup dropdown jika klik di luar
-    document.addEventListener("click", (e) => {
-      if (!priceButton.contains(e.target) && !priceDropdown.contains(e.target)) {
+    document.addEventListener("click", event => {
+      if (
+        !priceButton.contains(event.target) &&
+        !priceDropdown.contains(event.target)
+      ) {
         priceDropdown.classList.add("hidden");
+        priceButton.setAttribute("aria-expanded", "false");
       }
     });
 
-    // Filter produk
-    function filterProducts() {
-      const searchValue = searchInput.value.toLowerCase().trim();
-
-      products.forEach(product => {
-        const productName = product.getAttribute("data-name").toLowerCase();
-        const productPrice = parseInt(product.getAttribute("data-price"));
-
-        // Filter nama
-        const matchName = productName.includes(searchValue);
-
-        // Filter harga
-        let matchPrice = true;
-
-        if (selectedPriceValue !== "all") {
-          const [min, max] = selectedPriceValue.split("-").map(Number);
-          matchPrice = productPrice >= min && productPrice <= max;
-        }
-
-        // Tampilkan atau sembunyikan produk
-        if (matchName && matchPrice) {
-          product.style.display = "block";
-        } else {
-          product.style.display = "none";
-        }
-      });
-    }
-
-    // Search produk
     searchInput.addEventListener("input", filterProducts);
 
-  });
-</script>
-
+    loadProducts();
+  </script>
 </body>
 </html>
