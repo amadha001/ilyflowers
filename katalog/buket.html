@@ -97,8 +97,9 @@
     let selectedPriceValue = "all";
 
     function money(value) {
-      return "Rp" + Number(value).toLocaleString("id-ID");
-    }
+  const angka = Number(String(value).replace(/[^\d-]/g, ""));
+  return "Rp" + angka.toLocaleString("id-ID");
+}
 
     // Mengubah link berbagi Google Drive menjadi URL gambar.
     function getImageUrl(link) {
