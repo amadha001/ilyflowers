@@ -264,12 +264,12 @@
       };
 
       const script = document.createElement("script");
-      script.src = API_URL + "?callback=" + callbackName;
-      script.onerror = function () {
-        delete window[callbackName];
-        statusMessage.textContent =
-          "Katalog gagal dimuat. Periksa URL Web App dan pengaturan aksesnya.";
-      };
+script.src = API_URL + "?kategori=bouquet&callback=" + callbackName;
+script.onerror = function () {
+  delete window[callbackName];
+  statusMessage.textContent =
+    "Katalog gagal dimuat. Periksa URL Web App dan pengaturan aksesnya.";
+};
 
       document.body.appendChild(script);
     }
