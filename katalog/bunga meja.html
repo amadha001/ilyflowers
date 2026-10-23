@@ -1,14 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#fdf2f8">
-  <title>Katalog Bunga Meja</title>
+  <title>Katalog Bunga Meja Floris</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #fdf2f8;
+      font-family: Arial, sans-serif;
+    }
+
     .product-image {
       display: block;
       width: 100%;
@@ -25,7 +34,8 @@
 
 <body class="bg-pink-50 font-sans">
   <section class="max-w-6xl mx-auto px-4 py-10">
-    <h1 class="text-2xl font-bold text-center text-pink-800 mb-6">
+
+    <h1 class="text-2xl font-bold text-center text-pink-800 mb-2">
       Katalog Bunga Meja
     </h1>
 
@@ -45,7 +55,7 @@
           type="button"
           aria-expanded="false"
           aria-controls="priceDropdown"
-          class="w-full rounded-2xl border border-pink-300 bg-white px-5 py-3 text-pink-800 font-medium shadow-sm flex justify-between items-center hover:bg-pink-200 transition">
+          class="w-full rounded-2xl border border-pink-300 bg-white px-5 py-3 text-pink-800 font-medium shadow-sm flex justify-between items-center hover:bg-pink-100 transition">
           <span id="selectedPrice">Semua Harga</span>
           <svg class="w-5 h-5" fill="none" stroke="currentColor"
             viewBox="0 0 24 24" aria-hidden="true">
@@ -56,30 +66,65 @@
 
         <div id="priceDropdown"
           class="hidden absolute z-50 mt-2 w-full bg-pink-50 border border-pink-200 rounded-2xl shadow-lg overflow-hidden">
-          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="all">Semua Harga</button>
-          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="0-49999">Di bawah Rp50.000</button>
-          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="50000-100000">Rp50.000 - Rp100.000</button>
-          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="100001-200000">Rp100.000 - Rp200.000</button>
-          <button type="button" class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100" data-value="200001-99999999">Di atas Rp200.000</button>
+
+          <button type="button"
+            class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100"
+            data-value="all">Semua Harga</button>
+
+          <button type="button"
+            class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100"
+            data-value="0-49999">Di bawah Rp50.000</button>
+
+          <button type="button"
+            class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100"
+            data-value="50000-100000">Rp50.000 - Rp100.000</button>
+
+          <button type="button"
+            class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100"
+            data-value="100001-200000">Rp100.000 - Rp200.000</button>
+
+          <button type="button"
+            class="price-option w-full text-left px-5 py-3 text-pink-800 hover:bg-pink-100"
+            data-value="200001-99999999">Di atas Rp200.000</button>
         </div>
       </div>
     </div>
 
-    <p id="resultCount" class="text-sm text-pink-800 mb-4" aria-live="polite"></p>
+    <p id="resultCount"
+      class="text-sm text-pink-800 mb-4"
+      aria-live="polite"></p>
 
-    <div id="statusMessage" class="text-center text-gray-600 py-8">
-      Memuat katalog bunga meja...
+    <div id="statusMessage"
+      class="text-center text-gray-600 py-8">
+      Memuat katalog...
     </div>
 
-    <div id="productGrid" class="grid grid-cols-2 gap-4"></div>
+    <div id="productGrid"
+      class="grid grid-cols-2 gap-4">
+    </div>
 
-    <p id="emptyMessage" class="hidden text-center text-gray-600 py-8">
-      Bunga meja tidak ditemukan. Coba kata kunci atau rentang harga lain.
+    <p id="emptyMessage"
+      class="hidden text-center text-gray-600 py-8">
+      Produk tidak ditemukan. Coba kata kunci atau rentang harga lain.
     </p>
+
+    <div id="retryArea" class="hidden text-center py-4">
+      <button id="retryButton"
+        type="button"
+        class="rounded-xl bg-pink-400 px-5 py-3 text-white font-semibold shadow hover:bg-pink-500">
+        Coba Muat Ulang
+      </button>
+    </div>
+
   </section>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbx6OD3ghSmP5YFBGlq851DlRZRGmLVokaZskObvMqwBcQZ_OhhbviNO1CxyZjp39xxetg/exec";
+    // URL Apps Script yang sama dengan katalog Bouquet.
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbx6OD3ghSmP5YFBGlq851DlRZRGmLVokaZskObvMqwBcQZ_OhhbviNO1CxyZjp39xxetg/exec";
+
+    // Kategori ini membaca tab BungaMeja.
+    const KATEGORI = "bunga_meja";
 
     const grid = document.getElementById("productGrid");
     const searchInput = document.getElementById("searchInput");
@@ -90,13 +135,85 @@
     const resultCount = document.getElementById("resultCount");
     const emptyMessage = document.getElementById("emptyMessage");
     const statusMessage = document.getElementById("statusMessage");
+    const retryArea = document.getElementById("retryArea");
+    const retryButton = document.getElementById("retryButton");
 
     let products = [];
     let selectedPriceValue = "all";
+    let requestNumber = 0;
+
+    function normalizeHeader(value) {
+      return String(value)
+        .toLowerCase()
+        .replace(/[\s_-]+/g, "")
+        .trim();
+    }
+
+    function getField(product, aliases) {
+      const keys = Object.keys(product || {});
+
+      for (const alias of aliases) {
+        if (
+          product[alias] !== undefined &&
+          product[alias] !== null &&
+          String(product[alias]).trim() !== ""
+        ) {
+          return product[alias];
+        }
+      }
+
+      for (const alias of aliases) {
+        const target = normalizeHeader(alias);
+
+        const key = keys.find(
+          item => normalizeHeader(item) === target
+        );
+
+        if (
+          key !== undefined &&
+          product[key] !== undefined &&
+          product[key] !== null &&
+          String(product[key]).trim() !== ""
+        ) {
+          return product[key];
+        }
+      }
+
+      return "";
+    }
+
+    function getName(product) {
+      return String(
+        getField(product, ["nama", "name"])
+      ).trim();
+    }
+
+    function getTitle(product) {
+      return String(
+        getField(product, ["judul", "title"])
+      ).trim();
+    }
+
+    function getPrice(product) {
+      const raw = getField(product, ["harga", "price"]);
+
+      if (typeof raw === "number") {
+        return raw;
+      }
+
+      const cleaned = String(raw)
+        .replace(/rp/gi, "")
+        .replace(/\s/g, "")
+        .replace(/\./g, "")
+        .replace(/,/g, ".");
+
+      const number = Number(cleaned);
+
+      return Number.isFinite(number) ? number : 0;
+    }
 
     function money(value) {
-      const angka = Number(String(value).replace(/[^\d-]/g, ""));
-      return "Rp" + angka.toLocaleString("id-ID");
+      return "Rp" + Number(value || 0).toLocaleString("id-ID");
     }
 
     function getImageUrl(link) {
@@ -116,43 +233,95 @@
       return link;
     }
 
+    function getPhone(product) {
+      let phone = String(
+        getField(product, [
+          "nomor_wa",
+          "no wa",
+          "no_wa",
+          "nomor wa",
+          "whatsapp",
+          "wa"
+        ])
+      ).replace(/\D/g, "");
+
+      if (phone.startsWith("0")) {
+        phone = "62" + phone.substring(1);
+      }
+
+      return phone;
+    }
+
+    function extractProducts(response) {
+      if (Array.isArray(response)) return response;
+
+      if (response && Array.isArray(response.data)) {
+        return response.data;
+      }
+
+      if (response && Array.isArray(response.products)) {
+        return response.products;
+      }
+
+      if (response && Array.isArray(response.produk)) {
+        return response.produk;
+      }
+
+      return null;
+    }
+
     function renderProducts(data) {
       grid.replaceChildren();
+
       const fragment = document.createDocumentFragment();
 
       data.forEach((product, index) => {
+        const name = getName(product);
+        const titleText =
+          getTitle(product) || name || "Bunga Meja";
+
+        const priceValue = getPrice(product);
+
         const card = document.createElement("article");
+
         card.className =
           "product bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition";
 
-        card.dataset.name = String(
-          product.nama || ""
-        ).toLowerCase();
+        card.dataset.name =
+          (name + " " + titleText).toLowerCase();
 
-        card.dataset.price = String(
-          Number(product.harga) || 0
-        );
+        card.dataset.price = String(priceValue);
 
         const img = document.createElement("img");
+
         img.className = "product-image";
-        img.alt = product.judul || product.nama || "Foto bunga meja";
+        img.alt = titleText;
         img.width = 400;
         img.height = 500;
         img.decoding = "async";
+        img.loading = index === 0 ? "eager" : "lazy";
 
-        if (index === 0) {
-          img.loading = "eager";
-          img.fetchPriority = "high";
+        const imageUrl = getImageUrl(
+          getField(product, [
+            "link_foto",
+            "link foto",
+            "foto",
+            "gambar",
+            "image"
+          ])
+        );
+
+        if (imageUrl) {
+          img.src = imageUrl;
         } else {
-          img.loading = "lazy";
+          img.alt = "Foto produk belum tersedia";
         }
 
-        img.src = getImageUrl(product.link_foto);
-
-        img.onerror = function () {
+        img.onerror = function() {
           this.onerror = null;
           this.removeAttribute("src");
-          this.alt = "Foto tidak dapat dimuat. Periksa link Google Drive.";
+          this.alt =
+            "Foto tidak dapat dimuat. Periksa link foto di Google Sheets.";
         };
 
         const details = document.createElement("div");
@@ -160,33 +329,44 @@
 
         const title = document.createElement("h2");
         title.className = "text-sm font-semibold text-gray-800";
-        title.textContent = product.judul || product.nama || "Bunga Meja";
+        title.textContent = titleText;
 
         const price = document.createElement("p");
         price.className = "text-pink-700 font-bold text-sm mt-1";
-        price.textContent = money(product.harga);
+        price.textContent = money(priceValue);
 
         const order = document.createElement("a");
-        const phone = String(product.nomor_wa || "").replace(/\D/g, "");
+        const phone = getPhone(product);
 
-        const message = "Halo kak, saya ingin memesan " +
-          String(product.pesan || product.judul || product.nama || "bunga meja") +
-          " dengan harga " + money(product.harga);
+        const customMessage = String(
+          getField(product, ["pesan", "message"])
+        ).trim();
+
+        const message =
+          "Halo kak, saya ingin memesan " +
+          (customMessage || titleText) +
+          " dengan harga " + money(priceValue) + ".";
 
         order.href = phone
-          ? "https://wa.me/" + phone + "?text=" + encodeURIComponent(message)
+          ? "https://wa.me/" + phone +
+            "?text=" + encodeURIComponent(message)
           : "#";
 
         order.target = "_blank";
         order.rel = "noopener noreferrer";
+
         order.className =
           "mt-3 block text-center bg-pink-400 hover:bg-pink-500 text-white text-sm font-semibold py-2 rounded-xl transition";
+
         order.textContent = "Order Sekarang";
 
         if (!phone) {
-          order.addEventListener("click", event => {
+          order.addEventListener("click", function(event) {
             event.preventDefault();
-            alert("Nomor WhatsApp produk ini belum diisi di Google Sheets.");
+
+            alert(
+              "Nomor WhatsApp produk ini belum diisi di Google Sheets."
+            );
           });
         }
 
@@ -197,102 +377,151 @@
 
       grid.appendChild(fragment);
       filterProducts();
+
       statusMessage.classList.add("hidden");
+      retryArea.classList.add("hidden");
     }
 
     function filterProducts() {
-      const searchValue = searchInput.value.toLowerCase().trim();
-      const cards = Array.from(grid.querySelectorAll(".product"));
+      const searchValue =
+        searchInput.value.toLowerCase().trim();
+
+      const cards = Array.from(
+        grid.querySelectorAll(".product")
+      );
+
       let visibleCount = 0;
 
       cards.forEach(card => {
         const name = card.dataset.name || "";
         const price = Number(card.dataset.price) || 0;
-        const matchName = name.includes(searchValue);
 
+        const matchName = name.includes(searchValue);
         let matchPrice = true;
 
         if (selectedPriceValue !== "all") {
-          const [min, max] = selectedPriceValue.split("-").map(Number);
+          const [min, max] =
+            selectedPriceValue.split("-").map(Number);
+
           matchPrice = price >= min && price <= max;
         }
 
         const show = matchName && matchPrice;
+
         card.hidden = !show;
 
         if (show) visibleCount++;
       });
 
-      resultCount.textContent = visibleCount + " produk ditemukan";
-      emptyMessage.classList.toggle("hidden", visibleCount !== 0);
+      resultCount.textContent =
+        visibleCount + " produk ditemukan";
+
+      emptyMessage.classList.toggle(
+        "hidden",
+        visibleCount !== 0
+      );
     }
 
-    function loadProducts() {
-      if (!API_URL.startsWith("https://script.google.com/")) {
-        statusMessage.textContent =
-          "Masukkan URL Web App Apps Script terlebih dahulu.";
-        return;
-      }
+    function showError(message) {
+      statusMessage.textContent = message;
+      statusMessage.classList.remove("hidden");
+      retryArea.classList.remove("hidden");
+    }
 
-      const callbackName = "__bungaMejaDataCallback";
+    async function loadProducts() {
+      const currentRequest = ++requestNumber;
 
-      window[callbackName] = function (data) {
-        delete window[callbackName];
+      grid.replaceChildren();
+      resultCount.textContent = "";
+      emptyMessage.classList.add("hidden");
+      retryArea.classList.add("hidden");
 
-        if (!Array.isArray(data)) {
-          statusMessage.textContent =
-            "Data katalog tidak sesuai. Periksa Apps Script dan tab BungaMeja.";
-          return;
+      statusMessage.textContent = "Memuat katalog...";
+      statusMessage.classList.remove("hidden");
+
+      try {
+        const url =
+          API_URL +
+          "?kategori=" + encodeURIComponent(KATEGORI) +
+          "&t=" + Date.now();
+
+        const response = await fetch(url, {
+          method: "GET",
+          redirect: "follow",
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const result = await response.json();
+
+        if (currentRequest !== requestNumber) return;
+
+        const data = extractProducts(result);
+
+        if (data === null) {
+          throw new Error("Format data tidak sesuai");
         }
 
         products = data;
         renderProducts(products);
 
         if (products.length === 0) {
-          statusMessage.textContent =
-            "Belum ada bunga meja aktif. Periksa isi Google Sheets.";
-          statusMessage.classList.remove("hidden");
+          showError(
+            "Belum ada produk Bunga Meja. Periksa tab BungaMeja di Google Sheets."
+          );
         }
-      };
+      } catch (error) {
+        if (currentRequest !== requestNumber) return;
 
-      const script = document.createElement("script");
-      script.src = API_URL + "?kategori=bunga_meja&callback=" + callbackName;
+        console.error("Gagal memuat katalog:", error);
 
-      script.onerror = function () {
-        delete window[callbackName];
-        statusMessage.textContent =
-          "Katalog gagal dimuat. Periksa URL Web App dan pengaturan aksesnya.";
-      };
-
-      document.body.appendChild(script);
+        showError(
+          "Katalog gagal dimuat. Periksa koneksi atau akses Apps Script. Jika masih gagal, respons Apps Script perlu disesuaikan."
+        );
+      }
     }
 
-    priceButton.addEventListener("click", () => {
-      const isHidden = priceDropdown.classList.toggle("hidden");
-      priceButton.setAttribute("aria-expanded", String(!isHidden));
+    priceButton.addEventListener("click", function() {
+      const isHidden =
+        priceDropdown.classList.toggle("hidden");
+
+      priceButton.setAttribute(
+        "aria-expanded",
+        String(!isHidden)
+      );
     });
 
-    priceOptions.forEach(option => {
-      option.addEventListener("click", () => {
+    priceOptions.forEach(function(option) {
+      option.addEventListener("click", function() {
         selectedPriceValue = option.dataset.value;
-        selectedPrice.textContent = option.textContent.trim();
+
+        selectedPrice.textContent =
+          option.textContent.trim();
+
         priceDropdown.classList.add("hidden");
+
         priceButton.setAttribute("aria-expanded", "false");
+
         filterProducts();
       });
     });
 
-    document.addEventListener("click", event => {
+    document.addEventListener("click", function(event) {
       if (
         !priceButton.contains(event.target) &&
         !priceDropdown.contains(event.target)
       ) {
         priceDropdown.classList.add("hidden");
+
         priceButton.setAttribute("aria-expanded", "false");
       }
     });
 
     searchInput.addEventListener("input", filterProducts);
+    retryButton.addEventListener("click", loadProducts);
 
     loadProducts();
   </script>
