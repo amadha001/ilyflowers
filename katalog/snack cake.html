@@ -85,7 +85,7 @@
     <div id="productGrid" class="grid grid-cols-2 gap-4"></div>
 
     <p id="emptyMessage" class="hidden text-center text-gray-600 py-8">
-      Produk tidak ditemukan. Coba kata kunci atau rentang harga lain.
+      Produk tidak ditemukan.
     </p>
 
     <div id="retryArea" class="hidden text-center py-4">
@@ -396,7 +396,7 @@
 
         if (products.length === 0) {
           showError(
-            "Belum ada produk Snack Cake. Periksa tab SnackCake di Google Sheets."
+            "Belum ada produk"
           );
         }
       } catch (error) {
@@ -405,7 +405,7 @@
         console.error("Gagal memuat katalog:", error);
 
         showError(
-          "Katalog gagal dimuat. Periksa koneksi atau akses Apps Script. Jika masih gagal, respons Apps Script perlu disesuaikan."
+          "Katalog gagal dimuat."
         );
       }
     }
